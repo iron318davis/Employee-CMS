@@ -56,13 +56,13 @@ inquire.prompt(
             addEmp();
         break;
         case "View departments":
-            viewDepts();
+            view("department" , " Departments ");
         break;
         case "View roles":
-            viewRoles();
+            view("role", " Roles ");
         break;
         case "View employees":
-            viewEmps();
+            view("employee", " Employees ");
         break;
         case "Update employee role":
             updateEmpRole();
@@ -81,18 +81,143 @@ inquire.prompt(
         case "View the total utilized budget of a department":
             console.log("Optional.  ToDo")
         break;
-
+        case "Exit":
+            exitprogram()
+        break;
     }
 });
 }
 
+// Add functions
+function addDept(){
+    inquire.prompt([
+        {
+            name: "deptID",
+            type: "input",
+            message: "Enter Department ID Number:"
+        },
+        {
+            name: "deptName",
+            type: "input",
+            message: "Enter Department Name:"
+        }
+    ]).then(answer => {
+        connection.query(
+            "INSERT INTO department SET ?",
+            {
+                id: answer.deptID,
+                name: answer.deptName
+            },
+            function (err) {
+                if (err) throw err;
+                console.log("Department " + answer.deptName + " added");
+                beginning();
+            }
+        )
+    })
+}
+
+function addRole(){
+    inquire.prompt([
+        {
+            name: "roleID",
+            type: "input",
+            message: "Enter Role ID Number:"
+        },
+        {
+            name: "roleTitle",
+            type: "input",
+            message: "Enter Title for Role:"
+        },
+        {
+            name: "salary",
+            type: "input",
+            message: "Enter Salary Amount:"
+        },
+        {
+            name: "roledeptID",
+            type: "input",
+            message: "Enter Department ID for this Role:"
+        }
+    ]).then(answer => {
+        connection.query(
+            "INSERT INTO role SET ?",
+            {
+                id: answer.roleID,
+                title: answer.roleTitle,
+                salary: answer.salary,
+                department_id: answer.roledeptID
+            },
+            function (err) {
+                if (err) throw err;
+                console.log("Role " + answer.roleTitle + " added");
+                beginning();
+            }
+        )
+    })
+}
+
+function addEmp(){
+    inquire.prompt([
+        {
+            name: "empID",
+            type: "input",
+            message: "Enter Employee's ID Number:"
+        },
+        {
+            name: "empFirstName",
+            type: "input",
+            message: "Enter Employee's First Name:"
+        },
+        {
+            name: "empLastName",
+            type: "input",
+            message: "Enter Employee's Last Name:"
+        },
+        {
+            name: "empRoleID",
+            type: "input",
+            message: "Enter Employee's Role ID:"
+        },
+        {
+            name: "empManagerID",
+            type: "input",
+            message: "Enter Employee's Manager's ID:"
+        },
+    ]).then(answer => {
+        connection.query(
+            "INSERT INTO employee SET ?",
+            {
+                id: answer.empID,
+                first_name: answer.empFirstName,
+                last_name: answer.empLastName,
+                role_id: answer.empRoleID,
+                manager_id: answer.empManagerID
+            },
+            function (err) {
+                if (err) throw err;
+                console.log("Employee " + answer.empFirstName + " " + answer.empLastName + " added");
+                beginning();
+            }
+        )
+    })
+}
+// View functions
+function view(tableName, displayName) {
+    connection.query(`SELECT * FROM ${tableName}`, function (err, data) {
+      if (err) throw err;
+      console.table(`\n ${displayName}`, data);
+      beginning();
+    });
+  }
+
+// Update functions
 
 
 
-
-// app.listen(PORT, function () {
-//     // Log (server-side) when our server has started
-//     console.log("Server listening on: http://localhost:" + PORT);
-// });
-
+// Exit function
+function exitprogram() {
+    connection.end();
+};
+// Run master function
 beginning();
