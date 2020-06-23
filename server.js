@@ -16,7 +16,7 @@ connection.connect(function (err) {
         console.error("error connecting: " + err.stack);
         return;
     }
-    console.log("connected as id " + connection.threadId);
+    // console.log("connected as id " + connection.threadId);
 });
 
 // * Add departments, roles, employees
@@ -30,7 +30,7 @@ inquire.prompt(
         name: "whattodo",
         message: "What would you like to do?",
         choices: [
-            "Add departmentto database",
+            "Add department",
             "Add role",
             "Add employee",
             "View departments",
@@ -46,7 +46,7 @@ inquire.prompt(
     },
 ).then(answers => {
     switch (answers.whattodo){
-        case "Add departmentto database":
+        case "Add department":
             addDept();
         break;
         case "Add role":
@@ -212,7 +212,31 @@ function view(tableName, displayName) {
   }
 
 // Update functions
-
+function updateEmpRole() {
+    inquire.prompt([
+        {
+            name: "UDEmpRoleID",
+            type: "input",
+            message: "Enter ID of the employee to be updated"
+        },
+        {
+            type: "input",
+            name: "UDEmpRoleNewRole",
+            message: "Enter New Role for Employee"
+        }
+    ]).then(answer =>{ 
+        let promptone = answer.UDEmpRoleID;
+        let prompttwo = answer.UDEmpRoleNewRole
+        connection.query(
+            `UPDATE employee SET role_id = ${prompttwo} WHERE id = ${promptone}`,
+            function (err) {
+                if (err) throw err;
+                console.log("Employee #" + answer.UDEmpRoleID + " role updated to " + answer.UDEmpRoleNewRole);
+                beginning();
+            }
+        )
+    })
+}
 
 
 // Exit function
