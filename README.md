@@ -3,7 +3,7 @@
 
 ## Description 
 
-creates readme based on input
+Content Management System for managing employee related information
 
 ## Table of Contents
 
